@@ -20,54 +20,41 @@ or get it from source
 Basic app configuration
 -----------------------
 
-Then to add the Django Activity Stream to your project add the app ``actstream`` to your ``INSTALLED_APPS`` and urlconf.
+Then to add the Django Activity Stream to your project add the app ``actstream``  and ``django.contib.sites`` to your ``INSTALLED_APPS`` and urlconf. In addition to, add the setting ``SITE_ID = 1`` below the installed apps.
+
 
 .. code-block:: python
 
     INSTALLED_APPS = (
         'django.contrib.auth',
+        'django.contrib.sites',
         ...
         'actstream'
     )
 
-.. warning:: In Django versions older than 1.7, the app must be placed somewhere after all the apps that are going to be generating activities (eg ``django.contrib.auth``). The safest thing to do is to have it as the last app in ``INSTALLED_APPS``.
+    SITE_ID = 1
 
 Add the activity urls to your urlconf
 
 .. code-block:: python
 
-    urlpatterns = patterns('',
+    urlpatterns = [
         ...
         ('^activity/', include('actstream.urls')),
         ...
-    )
+    ]
 
 The activity urls are not required for basic usage but provide activity :ref:`feeds` and handle following, unfollowing and querying of followers.
 
-Migrations
-----------------
-
-As of Django 1.7 and later, the core ships with an integrated migrations framework based on `South <http://south.aeracode.org/>`_ migrations.
-
-.. note:: In django-activity-streams 0.6.0 and later the migrations have been re-initialized with the newer migrations framework and the south migrations have been deprecated.
-
-If you still wish to use the south migrations there is a way.
-Install it as you would normally and then modify your settings to use the deprecated south migration modules in actstream.
-
-.. code-block:: python
-
-    SOUTH_MIGRATION_MODULES = {
-        'actstream': 'actstream.south_migrations',
-    }
 
 Add extra data to actions
 -------------------------
 
-If you want to use custom data on your actions, then make sure you have `django-jsonfield <https://bitbucket.org/schinckel/django-jsonfield/>`_ installed
+If you want to use custom data on your actions, then make sure you have `django-jsonfield <https://pypi.org/project/django-jsonfield/>`_ installed
 
 .. code-block:: bash
 
-    $ pip install django-jsonfield
+    $ pip install django-activity-stream[jsonfield]
 
 You can learn more at :ref:`custom-data`
 
@@ -86,14 +73,14 @@ Make sure to pick the version of Django and django-activity-stream that supports
 Python
 ******
 
-* **Python 2**: 2.6 and 2.7
-* **Python 3**: 3.2, 3.3, 3.4, and 3.5
+* **Python 2**: 2.7
+* **Python 3**: 3.4, 3.5 and 3.6
 * **PyPy**: 2 and 3
 
 Django
 ******
 
-* **Django**: 1.3, 1.4, 1.5, 1.6, 1.7, 1.8 and 1.9
+* **Django**: 1.11, 2.0 and 2.1
 
 Databases
 *********
@@ -101,10 +88,9 @@ Databases
 django-activity-stream has been tested to work with the following databases but may work on other platforms (YMMV)
 
 * **Sqlite**: 3
-* **PostgreSQL**: 9.1, 9.2 and 9.3
+* **PostgreSQL**: 9.3+
     * Python: `psycopg2 <http://initd.org/psycopg/docs/>`_
     * PyPy: `psycopg2cffi <https://github.com/chtd/psycopg2cffi>`_
-* **MySQL**: 5.5 and 5.6
+* **MySQL**: 5.5 and 5.6+
     * Python/PyPy: `MySQL-python <https://github.com/farcepest/MySQLdb1>`_
     * Python 3: `PyMySQL <https://github.com/PyMySQL/PyMySQL/>`_
-

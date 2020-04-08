@@ -1,4 +1,7 @@
-from distutils.core import setup
+try:
+    from setuptools import setup
+except ImportError:
+    from distutils.core import setup
 from actstream import __version__
 
 setup(name='django-activity-stream',
@@ -7,22 +10,14 @@ setup(name='django-activity-stream',
       'site. Users can follow any actors\' activities for personalized streams.',
       long_description=open('README.rst').read(),
       author='Justin Quick',
+      license='BSD 3-Clause',
       author_email='justquick@gmail.com',
       url='http://github.com/justquick/django-activity-stream',
       packages=['actstream',
                 'actstream.migrations',
-                'actstream.south_migrations',
                 'actstream.templatetags',
                 'actstream.tests',
-                'actstream.runtests',
-                'actstream.runtests.testapp',
-                'actstream.runtests.testapp.migrations',
-                'actstream.runtests.testapp.south_migrations',
-                'actstream.runtests.testapp_nested',
-                'actstream.runtests.testapp_nested.migrations',
-                'actstream.runtests.testapp_nested.south_migrations',
-                'actstream.runtests.testapp_nested.models',
-      ],
+                ],
       package_data={'actstream': ['locale/*/LC_MESSAGES/*.po',
                                   'templates/actstream/*.html']},
       classifiers=['Development Status :: 5 - Production/Stable',
@@ -34,4 +29,8 @@ setup(name='django-activity-stream',
                    'Programming Language :: Python',
                    'Programming Language :: Python :: 3',
                    'Topic :: Utilities'],
+      extras_require={
+        'jsonfield': ['django-jsonfield>=1.0.1',
+                      'django-jsonfield-compat>=0.4.4'],
+      },
       )

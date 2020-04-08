@@ -1,21 +1,7 @@
-from django.core.exceptions import ImproperlyConfigured
-from django.utils.encoding import force_text
+from django.apps import AppConfig
 
 from actstream import settings
 from actstream.signals import action
-from actstream.compat_apps import AppConfig
-
-try:
-    from django.db.backends.mysql.base import DatabaseOperations
-except (ImportError, ImproperlyConfigured):
-    DatabaseOperations = None
-
-
-def fixed_last_executed_query(self, cursor, sql, params):
-    """
-    Patches error with MySQL + Django<=1.5: https://code.djangoproject.com/ticket/19954
-    """
-    return force_text(cursor._last_executed, errors='replace')
 
 
 class ActstreamConfig(AppConfig):
@@ -27,12 +13,8 @@ class ActstreamConfig(AppConfig):
         action_class = self.get_model('action')
 
         if settings.USE_JSONFIELD:
-            try:
-                from jsonfield.fields import JSONField
-            except ImportError:
-                raise ImproperlyConfigured('You must have django-jsonfield installed '
-                                           'if you wish to use a JSONField on your actions')
-            JSONField(blank=True, null=True).contribute_to_class(action_class, 'data')
-
-        if DatabaseOperations:
-            DatabaseOperations.last_executed_query = fixed_last_executed_query
+            from actstream.jsonfield import DataField, register_app
+            DataField(blank=True, null=True).contribute_to_class(
+                action_class, 'data'
+            )
+            register_app(self)
